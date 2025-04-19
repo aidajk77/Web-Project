@@ -41,6 +41,26 @@ class BaseDao
      * Method used to get add entity to database
      * string $first_name: First name is the first name of the course
      */
+
+
+
+     public function getAll()
+    {
+        $query = "SELECT * FROM " . $this->table_name;
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getById($id)
+    {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE id = ?";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([(int) $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
     public function add($entity)
     {
         $query = "INSERT INTO " . $this->table_name . " (";

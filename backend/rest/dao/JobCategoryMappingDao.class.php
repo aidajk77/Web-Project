@@ -4,6 +4,7 @@ require_once __DIR__ . "/BaseDao.php";
 class JobCategoryMappingDao extends BaseDao
 {
     protected $table_name;
+
     public function __construct()
     {
         $this->table_name = "jobcategorymapping";
@@ -26,5 +27,23 @@ class JobCategoryMappingDao extends BaseDao
                   JOIN jobs j ON jcm.job_id = j.job_id
                   WHERE jcm.category_id = :category_id";
         return $this->query($query, ['category_id' => $category_id]);
+    }
+
+    // Add new job-category mapping
+    public function add_mapping($mapping)
+    {
+        return $this->add($mapping);
+    }
+
+    // Update existing job-category mapping
+    public function update_mapping($id, $mapping)
+    {
+        return $this->update($mapping, $id, "id"); // change "id" to actual primary key column if different
+    }
+
+    // Delete job-category mapping
+    public function delete_mapping($id)
+    {
+        return $this->delete($id);
     }
 }
