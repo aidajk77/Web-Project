@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../services/JobsService.php';
+require_once __DIR__ . '/../services/JobsService.class.php';
 
 $jobService = new JobService();
 

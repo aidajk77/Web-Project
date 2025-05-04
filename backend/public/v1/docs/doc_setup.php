@@ -13,7 +13,7 @@
 
 /**
  * @OA\Server(
- *     url=http://localhost/web-project/backend,
+ *     url="http://localhost/web-project/backend",
  *     description="API Server"
  * )
  */

@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../services/BaseService.php';
-require_once __DIR__ . '/../dao/JobCategoriesDao.php';
+require_once __DIR__ . '/../services/BaseService.class.php';
+require_once __DIR__ . '/../dao/JobCategoriesDao.class.php';
 
 class JobCategoryService extends BaseService {
 
