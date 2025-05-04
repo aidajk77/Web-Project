@@ -12,9 +12,6 @@ require_once __DIR__ . '/../backend/rest/services/JobsService.class.php';
 require_once __DIR__ . '/../backend/rest/services/SavedJobsService.class.php';
 require_once __DIR__ . '/../backend/rest/services/UsersService.class.php';
 
-Flight::route('/', function() {
-    echo 'root ok';
-});
 
 Flight::register('applicationsService', 'ApplicationsService');
 Flight::register('companiesService', 'CompaniesService');
@@ -24,9 +21,6 @@ Flight::register('jobsService', 'JobsService');
 Flight::register('savedJobs', 'SavedJobsService');
 Flight::register('usersService', 'UsersService');
 
-Flight::route('/ping', function(){
-    echo 'pong';
-});
 
 // Load routes
 require_once __DIR__ . '/../backend/rest/routes/ApplicationsRoute.php';

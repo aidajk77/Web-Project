@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '0033c9bb7d0692d86ad91bcaabf548af6b686286',
+        'reference' => '82f23433d2dcc3285a937329724e7c3aa32ef2a2',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '0033c9bb7d0692d86ad91bcaabf548af6b686286',
+            'reference' => '82f23433d2dcc3285a937329724e7c3aa32ef2a2',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -46,20 +46,14 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'flightphp/core' => array(
-            'pretty_version' => 'v3.15.2',
-            'version' => '3.15.2.0',
-            'reference' => '0abf1b9b169a6d3f1010ab9b1acc0d8fb139be3d',
+        'mikecao/flight' => array(
+            'pretty_version' => 'v1.3.9',
+            'version' => '1.3.9.0',
+            'reference' => 'bc5e03ca59accb3ef37e31b6d4a2a9c78c7bb7ce',
             'type' => 'library',
-            'install_path' => __DIR__ . '/../flightphp/core',
+            'install_path' => __DIR__ . '/../mikecao/flight',
             'aliases' => array(),
             'dev_requirement' => false,
-        ),
-        'mikecao/flight' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '2.0.2',
-            ),
         ),
         'psr/cache' => array(
             'pretty_version' => '3.0.0',

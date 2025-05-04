@@ -1,6 +1,6 @@
 {
-    "require": {
-      "flightphp/core": "^3.15",
-         "zircote/swagger-php": "^3.3"
-    }
+  "require": {
+    "mikecao/flight": "^1.3",
+    "zircote/swagger-php": "^3.3"
   }
+}

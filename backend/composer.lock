@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "47ab28c931716c6d86857d827b8a67b0",
+    "content-hash": "7b5fd37863b274f28cb20e60fd556499",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -209,47 +209,30 @@
             "time": "2024-02-05T11:35:39+00:00"
         },
         {
-            "name": "flightphp/core",
-            "version": "v3.15.2",
+            "name": "mikecao/flight",
+            "version": "v1.3.9",
             "source": {
                 "type": "git",
-                "url": "https://github.com/flightphp/core.git",
-                "reference": "0abf1b9b169a6d3f1010ab9b1acc0d8fb139be3d"
+                "url": "https://github.com/mikecao/flight.git",
+                "reference": "bc5e03ca59accb3ef37e31b6d4a2a9c78c7bb7ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/flightphp/core/zipball/0abf1b9b169a6d3f1010ab9b1acc0d8fb139be3d",
-                "reference": "0abf1b9b169a6d3f1010ab9b1acc0d8fb139be3d",
+                "url": "https://api.github.com/repos/mikecao/flight/zipball/bc5e03ca59accb3ef37e31b6d4a2a9c78c7bb7ce",
+                "reference": "bc5e03ca59accb3ef37e31b6d4a2a9c78c7bb7ce",
                 "shasum": ""
             },
             "require": {
-                "ext-json": "*",
-                "php": ">=7.4"
-            },
-            "replace": {
-                "mikecao/flight": "2.0.2"
+                "php": ">=5.3.0"
             },
             "require-dev": {
-                "ext-pdo_sqlite": "*",
-                "flightphp/container": "^1.0",
-                "flightphp/runway": "^0.2.3 || ^1.0",
-                "league/container": "^4.2",
-                "level-2/dice": "^4.0",
-                "phpstan/extension-installer": "^1.4",
-                "phpstan/phpstan": "^2.1",
-                "phpunit/phpunit": "^9.6",
-                "rregeer/phpunit-coverage-check": "^0.3.1",
-                "squizlabs/php_codesniffer": "^3.11"
-            },
-            "suggest": {
-                "latte/latte": "Latte template engine",
-                "phpstan/phpstan": "PHP Static Analyzer",
-                "tracy/tracy": "Tracy debugger"
+                "phpunit/phpunit": "~4.6"
             },
             "type": "library",
             "autoload": {
                 "files": [
-                    "flight/autoload.php"
+                    "flight/autoload.php",
+                    "flight/Flight.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -262,26 +245,15 @@
                     "email": "mike@mikecao.com",
                     "homepage": "http://www.mikecao.com/",
                     "role": "Original Developer"
-                },
-                {
-                    "name": "Franyer Sánchez",
-                    "email": "franyeradriansanchez@gmail.com",
-                    "homepage": "https://faslatam.42web.io",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "n0nag0n",
-                    "email": "n0nag0n@sky-9.com",
-                    "role": "Maintainer"
                 }
             ],
-            "description": "Flight is a fast, simple, extensible framework for PHP. Flight enables you to quickly and easily build RESTful web applications. This is the maintained fork of mikecao/flight",
+            "description": "Flight is a fast, simple, extensible framework for PHP. Flight enables you to quickly and easily build RESTful web applications.",
             "homepage": "http://flightphp.com",
             "support": {
-                "issues": "https://github.com/flightphp/core/issues",
-                "source": "https://github.com/flightphp/core/tree/v3.15.2"
+                "issues": "https://github.com/mikecao/flight/issues",
+                "source": "https://github.com/mikecao/flight/tree/v1.3.9"
             },
-            "time": "2025-03-15T05:22:55+00:00"
+            "time": "2021-04-05T01:36:59+00:00"
         },
         {
             "name": "psr/cache",
