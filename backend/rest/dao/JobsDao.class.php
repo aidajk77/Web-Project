@@ -3,8 +3,8 @@ require_once __DIR__ . '/BaseDao.class.php';
 
 class JobsDao extends BaseDao
 {
-
     protected $table_name;
+
     public function __construct()
     {
         $this->table_name = "jobs";
@@ -32,16 +32,16 @@ class JobsDao extends BaseDao
     public function get_jobs_by_company($company_id)
     {
         $query = "SELECT * FROM jobs WHERE company_id = :company_id";
-        $params=['company_id' => $company_id];
+        $params = ['company_id' => $company_id];
         return $this->query($query, $params);
     }
 
-    public function filter_jobs_by_location_paginated($offset, $limit, $location=null)
+    public function filter_jobs_by_location_paginated($offset, $limit, $location = null)
     {
         $query = "SELECT * FROM " . $this->table_name;
         $params = [
-            'offset' => $offset,
-            'limit' => $limit
+            'offset' => (int)$offset,
+            'limit' => (int)$limit
         ];
 
         if ($location) {
@@ -50,8 +50,33 @@ class JobsDao extends BaseDao
         }
 
         $query .= " LIMIT :offset, :limit";
-        
-        return $this->query($query, $params);
+
+        // Use prepare + bindValue for LIMIT/OFFSET to avoid issues
+        $stmt = $this->connection->prepare($query);
+        if ($location) {
+            $stmt->bindValue(':location', $location, PDO::PARAM_STR);
+        }
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
+    // Add new job
+    public function add_job($job)
+    {
+        return $this->add($job);
+    }
+
+    // Update job by ID
+    public function update_job($id, $job)
+    {
+        return $this->update($job, $id);
+    }
+
+    // Delete job by ID
+    public function delete_job($id)
+    {
+        return $this->delete($id);
+    }
 }

@@ -1,11 +1,19 @@
 <?php
-require_once __DIR__ . "/BaseDao..class.php";
+require_once __DIR__ . "/BaseDao.class.php"; // fixed the typo in filename
 
 class UsersDao extends BaseDao
 {
+    protected $table_name;
+
     public function __construct()
     {
-        parent::__construct("users");
+        $this->table_name = "users";
+        parent::__construct($this->table_name);
+    }
+
+    public function get_all_users()
+    {
+        return $this->query('SELECT * FROM ' . $this->table_name, []);
     }
 
     public function get_user_by_id($id)
@@ -24,5 +32,23 @@ class UsersDao extends BaseDao
     {
         $query = "SELECT * FROM users WHERE company_id = :company_id";
         return $this->query($query, ['company_id' => $company_id]);
+    }
+
+    // Add a new user
+    public function add_user($user)
+    {
+        return $this->add($user);
+    }
+
+    // Update user by ID
+    public function update_user($id, $user)
+    {
+        return $this->update($user, $id);
+    }
+
+    // Delete user by ID
+    public function delete_user($id)
+    {
+        return $this->delete($id);
     }
 }
