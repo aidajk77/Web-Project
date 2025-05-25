@@ -16,6 +16,7 @@ $savedJobService = new SavedJobService();
  * )
  */
 Flight::route('GET /saved-jobs', function () use ($savedJobService) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     Flight::json($savedJobService->get_all_saved_jobs());
 });
 
@@ -39,6 +40,7 @@ Flight::route('GET /saved-jobs', function () use ($savedJobService) {
  * )
  */
 Flight::route('GET /saved-jobs/@id', function ($id) use ($savedJobService) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); // Simplified; you can implement owner-check logic if needed
     Flight::json($savedJobService->get_saved_job_by_id($id));
 });
 
@@ -64,6 +66,7 @@ Flight::route('GET /saved-jobs/@id', function ($id) use ($savedJobService) {
  * )
  */
 Flight::route('POST /saved-jobs', function () use ($savedJobService) {
+    Flight::auth_middleware()->authorizeRole(Roles::JOB_SEEKER);
     $data = Flight::request()->data->getData();
     Flight::json($savedJobService->create_saved_job($data));
 });
@@ -94,6 +97,7 @@ Flight::route('POST /saved-jobs', function () use ($savedJobService) {
  * )
  */
 Flight::route('PUT /saved-jobs/@id', function ($id) use ($savedJobService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::JOB_SEEKER, Roles::ADMIN]);
     $data = Flight::request()->data->getData();
     Flight::json($savedJobService->update_saved_job($id, $data));
 });
@@ -118,6 +122,7 @@ Flight::route('PUT /saved-jobs/@id', function ($id) use ($savedJobService) {
  * )
  */
 Flight::route('DELETE /saved-jobs/@id', function ($id) use ($savedJobService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::JOB_SEEKER, Roles::ADMIN]);
     Flight::json($savedJobService->delete_saved_job($id));
 });
 
@@ -141,6 +146,7 @@ Flight::route('DELETE /saved-jobs/@id', function ($id) use ($savedJobService) {
  * )
  */
 Flight::route('GET /saved-jobs/user/@user_id', function ($user_id) use ($savedJobService) {
+    Flight::auth_middleware()->authorizeUserOrRole($user_id, [Roles::ADMIN]);
     Flight::json($savedJobService->get_saved_jobs_by_user($user_id));
 });
 
@@ -164,5 +170,6 @@ Flight::route('GET /saved-jobs/user/@user_id', function ($user_id) use ($savedJo
  * )
  */
 Flight::route('GET /saved-jobs/job/@job_id', function ($job_id) use ($savedJobService) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     Flight::json($savedJobService->get_users_who_saved_job($job_id));
 });

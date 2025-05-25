@@ -21,7 +21,7 @@ class UserService extends BaseService {
     }
 
     public function update_user($id, $user) {
-        return $this->update($id, $user);
+        return $this->dao->update_user($id, $user);
     }
 
     public function delete_user($id) {

@@ -66,6 +66,7 @@ Flight::route('GET /companies/@id', function ($id) use ($companyService) {
  * )
  */
 Flight::route('POST /companies', function () use ($companyService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::ADMIN, Roles::EMPLOYER]);
     $data = Flight::request()->data->getData();
     Flight::json($companyService->create_company($data));
 });
@@ -100,6 +101,7 @@ Flight::route('POST /companies', function () use ($companyService) {
  * )
  */
 Flight::route('PUT /companies/@id', function ($id) use ($companyService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::ADMIN, Roles::EMPLOYER]);
     $data = Flight::request()->data->getData();
     Flight::json($companyService->update_company($id, $data));
 });
@@ -124,6 +126,7 @@ Flight::route('PUT /companies/@id', function ($id) use ($companyService) {
  * )
  */
 Flight::route('DELETE /companies/@id', function ($id) use ($companyService) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     Flight::json($companyService->delete_company($id));
 });
 

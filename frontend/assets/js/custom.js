@@ -46,16 +46,209 @@ window.addEventListener("hashchange", function() {
 updateActiveNav();
 
 
+$(document).on('click', '#openUsersBtn', function (e) {
+  e.preventDefault();
+
+  $('#userListModal').modal('show');
+  $('#users-container').html('<p>Loading users...</p>');
+
+  UserService.getAllUsers()
+    .then(response => {
+      let html = '';
+      if (response.length > 0) {
+        html += `
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        response.forEach(user => {
+          html += `
+            <tr>
+              <td>${user.id}</td>
+              <td>${user.name || '-'}</td>
+              <td>${user.email}</td>
+              <td>${user.role}</td>
+              <td>
+                <button class="btn btn-sm btn-primary me-1 edit-user-btn" data-id="${user.id}">Edit</button>
+                <button class="btn btn-sm btn-danger me-1 delete-user-btn" data-id="${user.id}">Delete</button>
+                <button class="btn btn-sm btn-secondary view-user-btn" data-id="${user.id}">View</button>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table>`;
+      } else {
+        html = '<p>No users found.</p>';
+      }
+
+      $('#users-container').html(html);
+    })
+    .catch(() => {
+      $('#users-container').html('<p class="text-danger">Failed to load users.</p>');
+    });
+});
+
+$(document).on('click', '.delete-user-btn', function () {
+  const userId = $(this).data('id');
+
+  if (confirm("Are you sure you want to delete this user?")) {
+    UserService.deleteUser(userId)
+      .then(() => {
+        toastr.success("User deleted successfully.");
+        // Refresh or remove from DOM
+        $(`#user-${userId}`).remove();
+      })
+      .catch(() => {
+        toastr.error("Failed to delete user.");
+      });
+  }
+});
+
+$(document).on('click', '.view-user-btn', function () {
+  const id = $(this).data('id');
+  alert('View user ID: ' + id);
+  // Add logic to show details
+});
+
+$(document).on('click', '.edit-user-btn', function () {
+  const userId = $(this).data('id');
+
+  // Fetch user by ID from your user list (or via API)
+  UserService.getAllUsers().then(users => {
+    const user = users.find(u => u.id === userId);
+    if (!user) {
+		return;
+	}
+
+    $('#edit-user-id').val(user.id);
+    $('#edit-user-name').val(user.name || '');
+    $('#edit-user-email').val(user.email || '');
+    $('#edit-user-role').val(user.role || 'job seeker');
+
+    $('#editUserModal').modal('show');
+  });
+});
+
+$(document).on('submit', '#editUserForm', function (e) {
+  e.preventDefault();
+
+  const id = $('#edit-user-id').val();
+  const updatedUser = {
+    name: $('#edit-user-name').val(),
+    email: $('#edit-user-email').val(),
+    role: $('#edit-user-role').val()
+  };
+  UserService.updateUser(id, updatedUser)
+    .then(response => {
+	  console.log("edit enter")
+      toastr.success("User updated successfully");
+      $('#editUserModal').modal('hide');
+      $('#openUsersBtn').click(); // Refresh the list
+    })
+    .catch(xhr => {
+      toastr.error(xhr.responseText || "Update failed");
+    });
+});
+
+$(document).on('click', '#openJobsBtn', function (e) {
+  e.preventDefault();
+
+  $('#jobListModal').modal('show');
+  $('#jobs-container').html('<p>Loading jobs...</p>');
+
+  JobService.getAllJobs()
+    .then(response => {
+      let html = '';
+      if (response.length > 0) {
+        html += '<ul class="list-group">';
+        response.forEach(job => {
+          html += `
+            <li class="list-group-item">
+              <strong>${job.title}</strong> (${job.company_name})<br>
+              <small>${job.location} • ${job.job_type}</small>
+              <div class="mt-2">
+                <button class="btn btn-sm btn-info me-2 view-job-btn" data-id="${job.id}">View</button>
+                <button class="btn btn-sm btn-warning me-2 edit-job-btn" data-id="${job.id}">Edit</button>
+                <button class="btn btn-sm btn-danger delete-job-btn" data-id="${job.id}">Delete</button>
+              </div>
+            </li>
+          `;
+        });
+        html += '</ul>';
+      } else {
+        html = '<p>No job listings found.</p>';
+      }
+
+      $('#jobs-container').html(html);
+    })
+    .catch(() => {
+      $('#jobs-container').html('<p class="text-danger">Failed to load jobs.</p>');
+    });
+});
+
+
+
 
 $(document).ready(function() {
     var app = $.spapp({
         defaultView  : "#home-section",
-        templateDir  : "",
+        templateDir  : "pages/",
         pageNotFound : "#error_404"
     });
 
+    // LOGIN
+    app.route({
+        view: "login",
+        load: "login.html",
+        onCreate: function() {
+            UserService.init();
+            UserService.generateNavbar(); // ✅ add here
+        }
+    });
+
+    // HOME
+    app.route({
+        view: "home-section",
+        onCreate: function () {
+            JobService.loadJobs();
+            UserService.generateNavbar(); // ✅ add here too
+        }
+    });
+
+    // JOB LISTINGS
+    app.route({
+        view: "job-listings",
+        onCreate: function() {
+            JobService.loadJobs();
+            UserService.generateNavbar();
+        }
+    });
+
+    app.route({
+      view: "admin-dashboard",
+      onCreate: function () {
+        UserService.generateNavbar();
+        UserService.showAdminSection(); // ✅ only here
+      }
+    });
+
+    // DEFAULT navbar update
+    UserService.generateNavbar();
+
     app.run();
 });
+
+
 
 $(document).ready(function() {
     // Scroll to top button click event

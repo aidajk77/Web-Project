@@ -36,6 +36,29 @@ class JobsDao extends BaseDao
         return $this->query($query, $params);
     }
 
+    public function get_jobs_paginated($offset, $limit)
+    {
+        $query = "SELECT * FROM " . $this->table_name . " ORDER BY date_posted DESC LIMIT :offset, :limit";
+
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function count_all_jobs()
+    {
+        $query = "SELECT COUNT(*) as total FROM " . $this->table_name;
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
+
+
     public function filter_jobs_by_location_paginated($offset, $limit, $location = null)
     {
         $query = "SELECT * FROM " . $this->table_name;
