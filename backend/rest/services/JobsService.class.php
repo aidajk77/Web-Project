@@ -39,4 +39,20 @@ class JobService extends BaseService {
     public function filter_jobs_by_location_paginated($offset, $limit, $location = null) {
         return $this->dao->filter_jobs_by_location_paginated($offset, $limit, $location);
     }
+
+    public function get_jobs_paginated($page = 1, $limit = 10)
+    {
+        $offset = ($page - 1) * $limit;
+
+        $jobs = $this->dao->get_jobs_paginated($offset, $limit);
+        $total = $this->dao->count_all_jobs();
+        $totalPages = ceil($total / $limit);
+
+        return [
+            'jobs' => $jobs,
+            'totalPages' => $totalPages,
+            'totalCount' => $total
+        ];
+    }
+
 }

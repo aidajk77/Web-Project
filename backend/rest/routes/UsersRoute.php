@@ -1,7 +1,10 @@
 <?php
 require_once __DIR__ . '/../services/UsersService.class.php';
+require_once __DIR__ . '/../../data/roles.class.php';
+
 
 $userService = new UserService();
+Flight::register('userService', 'UserService');
 
 /**
  * @OA\Get(
@@ -16,6 +19,7 @@ $userService = new UserService();
  * )
  */
 Flight::route('GET /users', function () use ($userService) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     Flight::json($userService->get_all_users());
 });
 
@@ -39,6 +43,7 @@ Flight::route('GET /users', function () use ($userService) {
  * )
  */
 Flight::route('GET /users/@id', function ($id) use ($userService) {
+    Flight::auth_middleware()->authorizeUserOrRole($id, [Roles::ADMIN]);
     Flight::json($userService->get_user_by_id($id));
 });
 
@@ -68,6 +73,7 @@ Flight::route('GET /users/@id', function ($id) use ($userService) {
  * )
  */
 Flight::route('POST /users', function () use ($userService) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     $data = Flight::request()->data->getData();
     Flight::json($userService->create_user($data));
 });
@@ -101,9 +107,18 @@ Flight::route('POST /users', function () use ($userService) {
  * )
  */
 Flight::route('PUT /users/@id', function ($id) use ($userService) {
-    $data = Flight::request()->data->getData();
-    Flight::json($userService->update_user($id, $data));
+    Flight::auth_middleware()->authorizeUserOrRole($id, [Roles::ADMIN]);
+    try {
+        $data = Flight::request()->data->getData();
+        Flight::userService()->update($data, $id);
+        Flight::json(["message" => "User updated successfully"]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["error" => $e->getMessage()]);
+        exit;
+    }
 });
+
 
 /**
  * @OA\Delete(
@@ -125,6 +140,7 @@ Flight::route('PUT /users/@id', function ($id) use ($userService) {
  * )
  */
 Flight::route('DELETE /users/@id', function ($id) use ($userService) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     Flight::json($userService->delete_user($id));
 });
 
@@ -148,6 +164,7 @@ Flight::route('DELETE /users/@id', function ($id) use ($userService) {
  * )
  */
 Flight::route('GET /users/email/@email', function ($email) use ($userService) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     Flight::json($userService->get_user_by_email($email));
 });
 
@@ -171,5 +188,6 @@ Flight::route('GET /users/email/@email', function ($email) use ($userService) {
  * )
  */
 Flight::route('GET /users/company/@company_id', function ($company_id) use ($userService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::ADMIN,Roles::EMPLOYER]);
     Flight::json($userService->get_users_by_company($company_id));
 });

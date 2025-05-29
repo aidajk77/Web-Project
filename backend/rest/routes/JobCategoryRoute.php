@@ -63,6 +63,7 @@ Flight::route('GET /job-categories/@id', function ($id) use ($jobCategoryService
  * )
  */
 Flight::route('POST /job-categories', function () use ($jobCategoryService) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     $data = Flight::request()->data->getData();
     Flight::json($jobCategoryService->create_category($data));
 });
@@ -94,6 +95,7 @@ Flight::route('POST /job-categories', function () use ($jobCategoryService) {
  * )
  */
 Flight::route('PUT /job-categories/@id', function ($id) use ($jobCategoryService) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     $data = Flight::request()->data->getData();
     Flight::json($jobCategoryService->update_category($id, $data));
 });
@@ -118,5 +120,6 @@ Flight::route('PUT /job-categories/@id', function ($id) use ($jobCategoryService
  * )
  */
 Flight::route('DELETE /job-categories/@id', function ($id) use ($jobCategoryService) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     Flight::json($jobCategoryService->delete_category($id));
 });

@@ -16,8 +16,18 @@ $jobService = new JobService();
  * )
  */
 Flight::route('GET /jobs', function () use ($jobService) {
-    Flight::json($jobService->get_all_jobs());
+    $page = Flight::request()->query['page'] ?? null;
+    $limit = Flight::request()->query['limit'] ?? null;
+
+    if ($page && $limit) {
+        $data = $jobService->get_jobs_paginated((int)$page, (int)$limit);
+        Flight::json($data);
+    } else {
+        Flight::json($jobService->get_all_jobs());
+
+    }
 });
+
 
 /**
  * @OA\Get(
@@ -68,10 +78,10 @@ Flight::route('GET /jobs/@id', function ($id) use ($jobService) {
  * )
  */
 Flight::route('POST /jobs', function () use ($jobService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::EMPLOYER, Roles::ADMIN]);
     $data = Flight::request()->data->getData();
     Flight::json($jobService->create_job($data));
 });
-
 /**
  * @OA\Put(
  *     path="/jobs/{id}",
@@ -103,6 +113,7 @@ Flight::route('POST /jobs', function () use ($jobService) {
  * )
  */
 Flight::route('PUT /jobs/@id', function ($id) use ($jobService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::EMPLOYER, Roles::ADMIN]);
     $data = Flight::request()->data->getData();
     Flight::json($jobService->update_job($id, $data));
 });
@@ -127,6 +138,7 @@ Flight::route('PUT /jobs/@id', function ($id) use ($jobService) {
  * )
  */
 Flight::route('DELETE /jobs/@id', function ($id) use ($jobService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::EMPLOYER, Roles::ADMIN]);
     Flight::json($jobService->delete_job($id));
 });
 
@@ -173,6 +185,7 @@ Flight::route('GET /jobs/search/title/@title', function ($title) use ($jobServic
  * )
  */
 Flight::route('GET /jobs/company/@company_id', function ($company_id) use ($jobService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::EMPLOYER, Roles::ADMIN]);
     Flight::json($jobService->get_jobs_by_company($company_id));
 });
 
@@ -216,3 +229,5 @@ Flight::route('GET /jobs/location', function () use ($jobService) {
 
     Flight::json($jobService->filter_jobs_by_location_paginated($offset, $limit, $location));
 });
+
+

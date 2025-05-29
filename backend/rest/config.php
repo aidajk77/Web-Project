@@ -27,4 +27,9 @@ class Config
     {
         return '127.0.0.1';
     }
+    // JWT Secret Key Definition
+    public static function JWT_SECRET() {
+        return 'aidajk77';
+    }
+
 }

@@ -1,0 +1,56 @@
+<!-- ADMIN SETTINGS SECTION -->
+<section id="admin-settings">
+  <div class="container">
+    <div class="row mb-5 justify-content-center">
+      <div class="col-md-8 text-center">
+        <h2 class="section-title mb-3">Admin Settings</h2>
+        <p class="lead">Manage system preferences, profile, and global configurations.</p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-10 bg-white p-5 shadow rounded">
+
+        <!-- Profile Settings -->
+        <h4 class="mb-4">Profile Settings</h4>
+        <form>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="adminName">Full Name</label>
+              <input type="text" class="form-control" id="adminName" value="Admin User">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="adminEmail">Email</label>
+              <input type="email" class="form-control" id="adminEmail" value="admin@example.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="adminPassword">Change Password</label>
+            <input type="password" class="form-control" id="adminPassword" placeholder="New Password">
+          </div>
+          <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+
+        <hr class="my-5">
+
+        <!-- System Settings -->
+        <h4 class="mb-4">System Settings</h4>
+        <form>
+          <div class="form-group">
+            <label for="siteTitle">Site Title</label>
+            <input type="text" class="form-control" id="siteTitle" value="JobFinder Portal">
+          </div>
+          <div class="form-group">
+            <label for="siteMode">Maintenance Mode</label>
+            <select class="form-control" id="siteMode">
+              <option>Off</option>
+              <option>On</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-warning">Save Settings</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>

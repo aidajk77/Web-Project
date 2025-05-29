@@ -18,7 +18,7 @@ class UsersDao extends BaseDao
 
     public function get_user_by_id($id)
     {
-        $query = "SELECT * FROM users WHERE user_id = :id";
+        $query = "SELECT * FROM users WHERE id = :id";
         return $this->query_unique($query, ['id' => $id]);
     }
 

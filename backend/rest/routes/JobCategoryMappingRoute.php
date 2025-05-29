@@ -70,6 +70,7 @@ Flight::route('GET /job-category-mappings/category/@category_id', function ($cat
  * )
  */
 Flight::route('POST /job-category-mappings', function () use ($mappingService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::EMPLOYER, Roles::ADMIN]);
     $data = Flight::request()->data->getData();
     Flight::json($mappingService->create_mapping($data));
 });
@@ -101,6 +102,7 @@ Flight::route('POST /job-category-mappings', function () use ($mappingService) {
  * )
  */
 Flight::route('PUT /job-category-mappings/@id', function ($id) use ($mappingService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::EMPLOYER, Roles::ADMIN]);
     $data = Flight::request()->data->getData();
     Flight::json($mappingService->update_mapping($id, $data));
 });
@@ -125,5 +127,6 @@ Flight::route('PUT /job-category-mappings/@id', function ($id) use ($mappingServ
  * )
  */
 Flight::route('DELETE /job-category-mappings/@id', function ($id) use ($mappingService) {
+    Flight::auth_middleware()->authorizeRoles([Roles::EMPLOYER, Roles::ADMIN]);
     Flight::json($mappingService->delete_mapping($id));
 });
