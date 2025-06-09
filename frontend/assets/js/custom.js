@@ -45,6 +45,123 @@ window.addEventListener("hashchange", function() {
 // Initialize on page load
 updateActiveNav();
 
+$(document).on('click', '#openApplicationsBtn', function (e) {
+  e.preventDefault();
+
+  $('#applicationsModal').modal('show');
+  $('#applications-container').html('<p>Loading applications...</p>');
+
+  ApplicationService.getApplications()
+    .then(response => {
+      let html = '';
+      if (response.length > 0) {
+        html += `
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Applicant ID</th>
+                <th>Applicant name</th>
+                <th>Job ID</th>
+                <th>Job title</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        response.forEach(app => {
+          html += `
+            <tr>
+              <td>${app.id}</td>
+              <td>${app.user_id || '-'}</td>
+              <td>${app.user_name}</td>
+              <td>${app.job_id}</td>
+              <td>${app.job_title}</td>
+              <td>${app.status}</td>
+              <td>
+                <button class="btn btn-sm btn-primary me-1 edit-app-btn" data-id="${app.id}">Edit</button>
+                <button class="btn btn-sm btn-danger me-1 delete-app-btn" data-id="${app.id}">Delete</button>
+                <button class="btn btn-sm btn-secondary view-app-btn" data-id="${app.id}">View</button>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table>`;
+      } else {
+        html = '<p>No applications found.</p>';
+      }
+
+      $('#applications-container').html(html);
+    })
+    .catch(() => {
+      $('#applications-container').html('<p class="text-danger">Failed to load applications.</p>');
+    });
+});
+
+// DELETE application
+$(document).on('click', '.delete-app-btn', function () {
+  const appId = $(this).data('id');
+
+  if (confirm("Are you sure you want to delete this application?")) {
+    ApplicationService.deleteApplication(appId)
+      .then(() => {
+        toastr.success("Application deleted successfully.");
+        $(`#application-${appId}`).remove(); // assuming row has id="application-1"
+      })
+      .catch(() => {
+        toastr.error("Failed to delete application.");
+      });
+  }
+});
+
+// VIEW application (can be extended)
+$(document).on('click', '.view-app-btn', function () {
+  const id = $(this).data('id');
+  alert('View application ID: ' + id);
+  // You can load details into a separate modal or UI section
+});
+
+// EDIT application - fill modal
+$(document).on('click', '.edit-app-btn', function () {
+  const appId = $(this).data('id');
+
+  ApplicationService.getApplications().then(apps => {
+    const app = apps.find(a => a.id === appId); 
+    if (!app) return;
+
+    $('#edit-app-id').val(app.id);
+    $('#edit-app-status').val(app.status || 'pending');
+    
+
+    $('#editApplicationModal').modal('show');
+  });
+});
+
+// SUBMIT updated application
+$(document).on('submit', '#editApplicationForm', function (e) {
+  e.preventDefault();
+
+  const id = $('#edit-app-id').val();
+  console.log("Editing app ID:", id); // This must print a number
+  const updatedApp = {
+    status: $('#edit-app-status').val()
+  };
+
+  ApplicationService.updateApplication(id, updatedApp)
+    .then(() => {
+      toastr.success("Application updated successfully");
+      $('#editApplicationModal').modal('hide');
+      $('#openApplicationsBtn').click(); // Refresh the list if needed
+    })
+    .catch(xhr => {
+      toastr.error(xhr.responseText || "Update failed");
+    });
+});
+
+
+
 
 $(document).on('click', '#openUsersBtn', function (e) {
   e.preventDefault();
@@ -174,7 +291,7 @@ $(document).on('click', '#openJobsBtn', function (e) {
         response.forEach(job => {
           html += `
             <li class="list-group-item">
-              <strong>${job.title}</strong> (${job.company_name})<br>
+              <strong>${job.title}</strong><br>
               <small>${job.location} • ${job.job_type}</small>
               <div class="mt-2">
                 <button class="btn btn-sm btn-info me-2 view-job-btn" data-id="${job.id}">View</button>
@@ -195,6 +312,91 @@ $(document).on('click', '#openJobsBtn', function (e) {
       $('#jobs-container').html('<p class="text-danger">Failed to load jobs.</p>');
     });
 });
+
+// DELETE job
+$(document).on('click', '.delete-job-btn', function () {
+  const jobId = $(this).data('id');
+
+  if (confirm("Are you sure you want to delete this job?")) {
+    JobService.deleteJob(jobId)
+      .then(() => {
+        toastr.success("Job deleted successfully.");
+        $(`#job-${jobId}`).remove(); // Remove from DOM if using row ID
+      })
+      .catch(() => {
+        toastr.error("Failed to delete job.");
+      });
+  }
+});
+
+// VIEW job
+$(document).on('click', '.view-job-btn', function () {
+  const id = $(this).data('id');
+  alert('View job ID: ' + id);
+  // Extend here to open a modal or page with full job details
+});
+
+// EDIT job
+$(document).on('click', '.edit-job-btn', function () {
+  const jobId = $(this).data('id');
+
+  JobService.getAllJobs().then(jobs => {
+    const job = jobs.find(j => j.id === jobId);
+    if (!job) return;
+
+    $('#edit-job-id').val(job.id);
+    $('#edit-job-title').val(job.title || '');
+    $('#edit-job-company').val(job.company || '');
+    $('#edit-job-location').val(job.location || '');
+    $('#edit-job-status').val(job.status || 'pending');
+    $('#edit-job-description').val(job.description || '');
+
+    populateCompanyDropdown(job.id);
+    
+
+    $('#editJobModal').modal('show');
+  });
+});
+
+// SUBMIT updated job
+$(document).on('submit', '#editJobForm', function (e) {
+  e.preventDefault();
+
+  const id = $('#edit-job-id').val();
+  const updatedJob = {
+    title: $('#edit-job-title').val(),
+    company_id: $('#edit-job-company').val(),
+    location: $('#edit-job-location').val(),
+    status: $('#edit-job-status').val(),
+    description: $('#edit-job-description').val()
+  };
+  console.log("Updated job data:", updatedJob);
+
+  JobService.updateJob(id, updatedJob)
+    .then(() => {
+      toastr.success("Job updated successfully");
+      $('#editJobModal').modal('hide');
+      $('#openJobsBtn').click(); // Refresh list
+    })
+    .catch(xhr => {
+      toastr.error(xhr.responseText || "Update failed");
+    });
+});
+
+function populateCompanyDropdown(selectedCompanyId) {
+  CompanyService.getAllCompanies().then(companies => {
+    const $dropdown = $('#edit-job-company');
+    $dropdown.empty();
+
+    companies.forEach(company => {
+      $dropdown.append(`<option value="${company.id}" ${company.id === selectedCompanyId ? 'selected' : ''}>${company.name}</option>`);
+    });
+  });
+}
+
+
+
+
 
 
 
@@ -236,6 +438,14 @@ $(document).ready(function() {
 
     app.route({
       view: "admin-dashboard",
+      onCreate: function () {
+        UserService.generateNavbar();
+        UserService.showAdminSection(); // ✅ only here
+      }
+    });
+
+    app.route({
+      view: "admin-settings",
       onCreate: function () {
         UserService.generateNavbar();
         UserService.showAdminSection(); // ✅ only here

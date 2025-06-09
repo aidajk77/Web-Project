@@ -36,8 +36,7 @@ Flight::route('/*', function() {
     if(
         str_contains(Flight::request()->url, '/auth/login') ||
         str_contains(Flight::request()->url, '/auth/register') ||
-        str_contains(Flight::request()->url, '/jobs')
-
+        (Flight::request()->method == 'GET' && str_contains(Flight::request()->url, '/jobs'))
     ) {
         return TRUE;
     } else {

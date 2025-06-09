@@ -110,7 +110,7 @@ Flight::route('PUT /users/@id', function ($id) use ($userService) {
     Flight::auth_middleware()->authorizeUserOrRole($id, [Roles::ADMIN]);
     try {
         $data = Flight::request()->data->getData();
-        Flight::userService()->update($data, $id);
+        Flight::userService()->update($id, $data);
         Flight::json(["message" => "User updated successfully"]);
     } catch (Exception $e) {
         http_response_code(500);
