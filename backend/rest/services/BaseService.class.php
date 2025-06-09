@@ -21,7 +21,7 @@ class BaseService {
     }
 
     public function update($id, $data) {
-        return $this->dao->update($id, $data);
+        return $this->dao->update($data, $id);
     }
 
     public function delete($id) {

@@ -17,7 +17,7 @@ $applicationService = new ApplicationService();
  */
 Flight::route('GET /applications', function () use ($applicationService) {
     Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
-    Flight::json($applicationService->get_all_applications());
+    Flight::json($applicationService->get_info_about_applications());
 });
 
 /**
@@ -175,3 +175,5 @@ Flight::route('GET /applications/job/@job_id', function ($job_id) use ($applicat
     Flight::auth_middleware()->authorizeRoles([Roles::ADMIN, Roles::EMPLOYER]);
     Flight::json($applicationService->get_applications_by_job($job_id));
 });
+
+

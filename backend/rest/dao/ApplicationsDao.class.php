@@ -53,4 +53,18 @@ class ApplicationsDao extends BaseDao
     {
         return $this->delete($id);
     }
+
+    public function get_info_about_applications(){
+        $query = "SELECT 
+        applications.id,
+        applications.user_id,
+        users.name AS user_name,
+        applications.job_id,
+        jobs.title AS job_title,
+        applications.status
+        FROM applications
+        JOIN users ON applications.user_id = users.id
+        JOIN jobs ON applications.job_id = jobs.id";
+        return $this->query($query,[]);
+    }
 }

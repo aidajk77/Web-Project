@@ -71,7 +71,20 @@ let JobService = {
     const start = (page - 1) * limit + 1;
     const end = Math.min(page * limit, total);
     $('.pagination-wrap span').text(`Showing ${start}-${end} of ${total} Jobs`);
-  }
+  },
+
+  updateJob: function (id, jobData) {
+    const token = localStorage.getItem("user_token");
+    return $.ajax({
+      url: Constants.PROJECT_BASE_URL + 'jobs/' + id,
+      method: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(jobData),
+      headers: {
+          'Authentication': token
+      },
+      dataType: 'json'
+    })}
 
 };
 
